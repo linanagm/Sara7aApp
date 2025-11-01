@@ -1,8 +1,7 @@
 import express from "express";
-
 import bootstrap from "./src/app.controller.js";
 
-const PORT = 3000;
+const PORT = process.env.PORT || 5200;
 const app = express();
 const host = "localhost";
 

@@ -1,6 +1,4 @@
-import * as dbService  from "../../DB/dbService.js";
 import { successResponse } from "../../Utils/successResponse.utils.js";
-import { userModel } from "../../DB/Models/user.model.js";
 import { decrypt } from "../../Utils/encryption.utils.js";
 
 export const getSingleUser = async (req , res , next) => {
@@ -15,7 +13,7 @@ export const getSingleUser = async (req , res , next) => {
         res , 
         statusCode : 200,    
         message: "User fetched successfully", 
-        data: req.user
+        data: {user: req.user}
     });
 
     

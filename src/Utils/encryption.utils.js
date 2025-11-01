@@ -1,12 +1,12 @@
 import CryptoJS from "crypto-js";
 
 export const encrypt = (plainText) => {
-    return CryptoJS.AES.encrypt(plainText , "hghgjgjhuijlklo").toString();
+    return CryptoJS.AES.encrypt(plainText , process.env.ENCRYPTION_KEY).toString();
 };
 //AES => algorithm encryption standard
 
 export const decrypt = (cipherText) => {
-    return CryptoJS.AES.decrypt(cipherText , "hghgjgjhuijlklo").toString(CryptoJS.enc.Utf8);
+    return CryptoJS.AES.decrypt(cipherText , process.env.ENCRYPTION_KEY).toString(CryptoJS.enc.Utf8);
 };
 
 
