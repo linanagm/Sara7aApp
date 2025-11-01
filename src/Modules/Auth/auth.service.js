@@ -1,8 +1,14 @@
 import { create, findOne } from "../../DB/dbService.js";
 import { userModel } from "../../DB/Models/user.model.js";
 import { successResponse } from "../../Utils/successResponse.utils.js";
-import bcrypt from "bcryptjs";
-import { hash , compare} from "../../Utils/hash.utils.js";
+//import bcrypt from "bcryptjs";
+import { hash , compare} from "../../Utils/hash.utils.js"
+import { encrypt , decrypt } from "../../Utils/encryption.utils.js"
+//import jwt from "jsonwebtoken";
+import { signToken } from "../../Utils/token.utils.js";
+//import { sign } from "jsonwebtoken";
+
+
 
 //asyncHandler function is used with old express version
 export const signup = async (req , res, next) => {
@@ -18,6 +24,9 @@ export const signup = async (req , res, next) => {
         //hashing
         const hashedPassword = await hash({plainText : password });
 
+        //encrypt phone number
+        const encryptedPhone = encrypt(phone);
+
         const user = await create({
             model : userModel,
             data : [{
@@ -26,7 +35,7 @@ export const signup = async (req , res, next) => {
                 email,
                 password: hashedPassword,
                 gender,
-                phone
+                phone: encryptedPhone
             }]
             
         });
@@ -52,15 +61,50 @@ export const login = async (req , res, next) => {
         if( !( await compare({plainText : password , hash : user.password}) ) )
             return next(new Error("Invalid credentials", {cause : 401}));
         
-        // const isMatch = await bcrypt.compare(password , user.password)
+        //const isMatch = await bcrypt.compare(password , user.password)
         // if(!isMatch)
         //     return next(new Error("Invalid credentials", {cause : 401}));
 
         //return res.status(200).json({message : "User logged in successfully", user});
+        
+//         const accessToken = jwt.sign({_id : user._id} , "secret" , {
+//         issuer: "Sara7a App",
+//         subject: "Authentication",
+//         expiresIn : 60 * 60 * 24
+// });
+
+//         const refreshToken = jwt.sign({_id : user._id} , "secret" , {
+//         issuer: "Sara7a App",
+//         subject: "Authentication",
+//         expiresIn : "7d"
+// });
+
+        const accessToken = signToken({
+            payload : {_id : user._id},
+            options : {
+                expiresIn : "1d",
+                issuer: "Sara7a App",
+                subject: "Authentication",
+            }
+        
+        });
+
+        const refreshToken = signToken({
+            payload : {_id : user._id},
+            options : {
+                expiresIn : "7d",
+                issuer: "Sara7a App",
+                subject: "Authentication",
+            }
+        
+        }); 
+
+
+
         return successResponse({
             res,
             statusCode : 200,
             message : "User logged in successfully", 
-            data : user
+            data : {accessToken , refreshToken}
         });
 };

@@ -14,7 +14,7 @@ export const findById = async ({
     select = "",
     populate = []
 } = {}) => {
-    return await model.findOne(id).select(select).populate(populate);
+    return await model.findOne({ _id : id}).select(select).populate(populate);
 };
 
 export const create = async ({
