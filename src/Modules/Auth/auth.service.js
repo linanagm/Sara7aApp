@@ -61,23 +61,7 @@ export const login = async (req , res, next) => {
         if( !( await compare({plainText : password , hash : user.password}) ) )
             return next(new Error("Invalid credentials", {cause : 401}));
         
-        //const isMatch = await bcrypt.compare(password , user.password)
-        // if(!isMatch)
-        //     return next(new Error("Invalid credentials", {cause : 401}));
-
-        //return res.status(200).json({message : "User logged in successfully", user});
         
-//         const accessToken = jwt.sign({_id : user._id} , "secret" , {
-//         issuer: "Sara7a App",
-//         subject: "Authentication",
-//         expiresIn : 60 * 60 * 24
-// });
-
-//         const refreshToken = jwt.sign({_id : user._id} , "secret" , {
-//         issuer: "Sara7a App",
-//         subject: "Authentication",
-//         expiresIn : "7d"
-// });
 
         const accessToken = signToken({
             payload : {_id : user._id},
